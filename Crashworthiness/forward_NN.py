@@ -1,28 +1,24 @@
 from matplotlib import pyplot as plt
-from keras.optimizers import Adam
-from keras.models import Sequential, Model
+from keras.models import Model
 from keras.layers import Dense, Input
-from ElectricMotorTemperature.preprocess import X_train, X_test, Y_train, Y_test
+from Crashworthiness.preprocess import X_train, X_test, Y_train, Y_test
 from sklearn.metrics import r2_score
 # apply fixed random seed 7
 from numpy.random import seed
 seed(7)
 
 # step 1: build forward NN
-input_layer = Input(shape=(7,))
-x = Dense(10, input_dim=7, activation='relu', name='f1')(input_layer)
-x = Dense(10, activation='relu', name='f2')(x)
-x = Dense(10, activation='relu', name='f3')(x)
-o = Dense(5, name='output')(x)
+input_layer = Input(shape=(5,))
+x = Dense(50, input_dim=7, activation='relu', name='f1')(input_layer)
+o = Dense(3, name='output')(x)
 model_forward = Model(input=input_layer, output=[o], name='forward NN')
-
-# step 2: compile and fit forward NN
-model_forward.compile(loss='mean_squared_error', optimizer='adam', metrics=['accuracy'])
-history = model_forward.fit(X_train, Y_train, epochs=100, validation_split=0.2, verbose=0)
-
 # show forward NN summary
 print("[Forward NN summary]")
 print(model_forward.summary())
+
+# step 2: compile and fit forward NN\
+model_forward.compile(loss='mse', optimizer='adam')
+history = model_forward.fit(X_train, Y_train, epochs=500, validation_split=0.2, verbose=0)
 
 # Plots loss vs. epoch
 history_dict = history.history

@@ -12,4 +12,4 @@ df[predictors] = df[predictors]/max_values
 X = df[predictors].values
 Y = df[target_column].values
 
-X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.30, random_state=40)
+X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.25, random_state=40)
