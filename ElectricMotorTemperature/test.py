@@ -1,4 +1,3 @@
 import numpy as np
-
-b = np.zeros((10, 7), dtype='int32')
-print(b)
+from ElectricMotorTemperature.preprocess import Y_test
+print(Y_test.iloc[:1])

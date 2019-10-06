@@ -2,7 +2,7 @@ from matplotlib import pyplot as plt
 from keras.optimizers import Adam
 from keras.models import Sequential, Model
 from keras.layers import Dense, Input
-from preprocess import X_train, X_test, Y_train, Y_test, X_train_inv, X_test_inv, Y_train_inv, Y_test_inv
+from ElectricMotorTemperature.preprocess import X_train, X_test, Y_train, Y_test
 from sklearn.metrics import r2_score
 # apply fixed random seed 7
 from numpy.random import seed
@@ -17,7 +17,7 @@ o = Dense(5, name='output')(x)
 model_forward = Model(input=input_layer, output=[o], name='forward NN')
 
 # step 2: compile and fit forward NN
-model_forward.compile(Adam(lr=0.001), 'mean_squared_error')
+model_forward.compile(loss='mean_squared_error', optimizer='adam', metrics=['accuracy'])
 history = model_forward.fit(X_train, Y_train, epochs=100, validation_split=0.2, verbose=0)
 
 # show forward NN summary

@@ -1,9 +1,10 @@
 import numpy as np
+import pandas as pd
 from matplotlib import pyplot as plt
 from keras.optimizers import Adam
 from keras.models import Sequential, Model
 from keras.layers import Dense, Input
-from preprocess import X_train, X_test, Y_train, Y_test, X_train_inv, X_test_inv, Y_train_inv, Y_test_inv
+from ElectricMotorTemperature.preprocess import X_train, X_test, Y_train, Y_test
 from sklearn.metrics import r2_score
 # apply fixed random seed 7
 from numpy.random import seed
@@ -18,7 +19,7 @@ o = Dense(5, name='output')(x)
 model_forward = Model(input=input_layer, output=o)
 
 # step 2: compile and fit forward NN
-model_forward.compile(Adam(lr=0.001), 'mean_squared_error')
+model_forward.compile(loss='mean_squared_error', optimizer='adam', metrics=['accuracy'])
 history = model_forward.fit(X_train, Y_train, epochs=100, validation_split=0.2, verbose=0)
 # show forward NN summary
 print("[Forward NN summary]")
@@ -40,13 +41,10 @@ x1 = Dense(10, activation='relu', name='i2')(x1)
 x1 = Dense(10, activation='relu', name='i3')(x1)
 x1 = Dense(7, name='intermediate')(x1)
 o1 = model_forward(x1)
-model_tandem = Model(input=input_layer1, output=o1)
-# intermediate_layer_weights = np.ones((10, 7), dtype='int32')
-# intermediate_layer = model_tandem.get_layer('intermediate')
-# intermediate_layer.set_weights([intermediate_layer_weights, intermediate_layer.get_weights()[1]])
+model_tandem = Model(input=input_layer1, output=o1, name='tandem NN')
 
 # step 5: compile and fit tandem NN
-model_tandem.compile(Adam(lr=0.001), 'mean_squared_error')
+model_tandem.compile(loss='mean_squared_error', optimizer='adam', metrics=['accuracy'])
 history = model_tandem.fit(Y_train, Y_train, epochs=100, validation_split=0.2, verbose=0)
 # show tandem NN summary
 print("[Tandem NN summary]")
@@ -68,8 +66,8 @@ print("[Tandem NN] The R2 score on the Test set is:\t{:0.3f}".format(r2_score(Y_
 intermediate_layer_model = Model(inputs=model_tandem.input,
                                  outputs=model_tandem.get_layer('intermediate').output)
 
-# Calculates and prints r2 score of training and testing data
-X_train_pred = intermediate_layer_model.predict(Y_train)
-X_test_pred = intermediate_layer_model.predict(Y_test)
-print("[Intermediate layer] The R2 score on the Train set is:\t{:0.3f}".format(r2_score(X_train, X_train_pred)))
-print("[Intermediate layer] The R2 score on the Test set is:\t{:0.3f}".format(r2_score(X_test, X_test_pred)))
+test_data = Y_test.iloc[:1]
+X_test_pred = intermediate_layer_model.predict(test_data)
+print(test_data)
+print(X_test_pred)
+print(model_forward.predict(X_test_pred))
