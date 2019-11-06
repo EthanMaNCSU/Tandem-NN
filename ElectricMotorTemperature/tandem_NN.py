@@ -36,7 +36,7 @@ for layer in model_forward.layers:
 
 # step 4: build tandem NN
 input_layer1 = Input(shape=(5,))
-x1 = Dense(10, input_dim=7, activation='relu', name='i1')(input_layer1)
+x1 = Dense(10, activation='relu', name='i1')(input_layer1)
 x1 = Dense(10, activation='relu', name='i2')(x1)
 x1 = Dense(10, activation='relu', name='i3')(x1)
 x1 = Dense(7, name='intermediate')(x1)

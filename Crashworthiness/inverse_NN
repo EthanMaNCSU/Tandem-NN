@@ -1,0 +1,36 @@
+from matplotlib import pyplot as plt
+from keras.models import Model
+from keras.layers import Dense, Input
+from Crashworthiness.preprocess import X_train, X_test, Y_train, Y_test
+from sklearn.metrics import r2_score
+# apply fixed random seed 7
+from numpy.random import seed
+seed(7)
+
+# step 1: build forward NN
+input_layer = Input(shape=(3,))
+x = Dense(50, activation='relu', name='i1')(input_layer)
+x = Dense(50, activation='relu', name='i2')(x)
+x = Dense(50, activation='relu', name='i3')(x)
+o = Dense(5, name='output')(x)
+model_forward = Model(input=input_layer, output=[o], name='inverse NN')
+# show forward NN summary
+print("[Inverse NN summary]")
+print(model_forward.summary())
+
+# step 2: compile and fit forward NN\
+model_forward.compile(loss='mse', optimizer='adam')
+history = model_forward.fit(Y_train, X_train, epochs=300, validation_split=0.2)
+
+# Plots loss vs. epoch
+history_dict = history.history
+loss_values = history_dict['loss']
+val_loss_values = history_dict['val_loss']
+plt.plot(loss_values, 'b', label='training loss')
+plt.plot(val_loss_values, 'r', label='training loss val')
+plt.show()
+# Calculates and prints r2 score of training and testing data
+X_train_pred = model_forward.predict(Y_train)
+X_test_pred = model_forward.predict(Y_test)
+print("[Inverse NN] The R2 score on the Train set is:\t{:0.3f}".format(r2_score(X_train, X_train_pred)))
+print("[Inverse NN] The R2 score on the Test set is:\t{:0.3f}".format(r2_score(X_test, X_test_pred)))
