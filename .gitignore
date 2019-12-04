@@ -2,3 +2,4 @@ ElectricMotorTemperature/faults.csv
 ElectricMotorTemperature/pmsm_temperature_data.csv
 venv/*
 .idea
+Crashworthiness/inverse_NN.py

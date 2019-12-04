@@ -2,12 +2,13 @@ import pandas as pd
 from pandas import HDFStore
 from sklearn.model_selection import train_test_split
 import random
+import numpy as np
 # generate data set
 
-num_of_instance = 20000
+num_of_instances = 10000
 count = 0
 data = {'x1':[], 'x2':[], 'x3':[], 'x4':[], 'x5':[], 'f1':[], 'f2':[], 'f3':[]}
-while (count < num_of_instance):
+while (count < num_of_instances):
     count = count + 1
     x1 = random.uniform(1, 3)
     x2 = random.uniform(1, 3)
@@ -30,29 +31,23 @@ while (count < num_of_instance):
 df = pd.DataFrame(data)
 target_column = ['f1', 'f2', 'f3']
 predictors = ['x1', 'x2', 'x3', 'x4', 'x5']
-X = df[predictors]
-Y = df[target_column]
-X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.25)
-# store = HDFStore('data.h5')
-# store["X_train"] = X_train
-# store["X_test"] = X_test
-# store["Y_train"] = Y_train
-# store["Y_test"] = Y_test
-# print(X)
-# print(Y)
 
 # normalize data
 predictors_max_values = df[predictors].max().values
 predictors_min_values = df[predictors].min().values
-X = (df[predictors]-predictors_min_values)/(predictors_max_values-predictors_min_values)
+df[predictors] = (df[predictors]-predictors_min_values)/(predictors_max_values-predictors_min_values)
 target_column_max_values = df[target_column].max().values
 target_column_min_values = df[target_column].min().values
-Y = (df[target_column]-target_column_min_values)/(target_column_max_values - target_column_min_values)
-X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.25)
-# store1 = HDFStore('data_normalized.h5')
-# store1["X_train"] = X_train
-# store1["X_test"] = X_test
-# store1["Y_train"] = Y_train
-# store1["Y_test"] = Y_test
-# print(X)
-# print(Y)
+df[target_column] = (df[target_column]-target_column_min_values)/(target_column_max_values - target_column_min_values)
+X_train, X_test, Y_train, Y_test = train_test_split(df[predictors], df[target_column], test_size=0.25)
+store1 = HDFStore('data_normalized.h5')
+store1["X_train"] = X_train
+store1["X_test"] = X_test
+store1["Y_train"] = Y_train
+store1["Y_test"] = Y_test
+store1["X_max"] = df[predictors].max()
+store1["X_min"] = df[predictors].min()
+store1["Y_max"] = df[target_column].max()
+store1["Y_min"] = df[target_column].min()
+
+print('')
