@@ -125,27 +125,27 @@ def divide_data(division_num, num_of_instances):
                     result.append([f1_min+half_subdiv_range, f2_min+half_subdiv_range, f3_min+half_subdiv_range, R2])
      return result
 
-# # calculate R2 of each subdivision
-# division_num = 7
-# num_of_instances = int(round(10000/(division_num**3)))
-# subdivision_R2_scores = divide_data(division_num, num_of_instances)
-# np.save("subdivision_R2_"+str(division_num), subdivision_R2_scores)
-# print("\n"+str(num_of_instances))
+# calculate R2 of each subdivision
+division_num = 7
+num_of_instances = int(round(10000/(division_num**3)))
+subdivision_R2_scores = divide_data(division_num, num_of_instances)
+np.save("subdivision_R2_ "+ str(division_num), subdivision_R2_scores)
+print("\n"+str(num_of_instances))
 
 
-# calculate MSE of each point
-res = {'f1': [], 'f1_cal': [], 'f1_diff': [], 'f2': [], 'f2_cal': [], 'f2_diff': [],'f3': [], 'f3_cal': [], 'f3_diff': [],
-       "mse": []
-       }
-Y_input = generate_margin_input(0.1, 1000)
-# Y_input = Y_test
-for i in range(len(Y_input)):
-# for i in range(5):
-     curr_Y = Y_input[i:i+1]
-     mse = calculate_mse(curr_Y, res)
-     res['mse'].append(mse)
-res = pd.DataFrame(res)
-score = HDFStore('mse_bad_prediction_corner.h5')
-score['df'] = res
-print(res)
-print(calculate_R2(Y_input))
+# # calculate MSE of each point
+# res = {'f1': [], 'f1_cal': [], 'f1_diff': [], 'f2': [], 'f2_cal': [], 'f2_diff': [],'f3': [], 'f3_cal': [], 'f3_diff': [],
+#        "mse": []
+#        }
+# Y_input = generate_margin_input(0.1, 1000)
+# # Y_input = Y_test
+# for i in range(len(Y_input)):
+# # for i in range(5):
+#      curr_Y = Y_input[i:i+1]
+#      mse = calculate_mse(curr_Y, res)
+#      res['mse'].append(mse)
+# res = pd.DataFrame(res)
+# score = HDFStore('mse_bad_prediction_corner.h5')
+# score['df'] = res
+# print(res)
+# print(calculate_R2(Y_input))
